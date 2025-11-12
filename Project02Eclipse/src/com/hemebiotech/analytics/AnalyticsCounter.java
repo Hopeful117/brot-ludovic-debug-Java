@@ -6,74 +6,46 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import com.hemebiotech.Symptom;
 
 public class AnalyticsCounter {
-	static Set<Symptom> symptoms;
+	private ISymptomReader reader;
+	private ISymptomWriter writer;
 
 
-	public static void main(String args[]) throws Exception {
-		Set <Symptom> symptoms = new HashSet<Symptom>();
-		boolean found = false;
-		// first get input
-		try {
-		Path path = Path.of("/home/ludo/Documents/OC/Debug-Java/brot-ludovic-debug-Java/Project02Eclipse/symptoms.txt");
-		BufferedReader reader = new BufferedReader (new FileReader(path.toFile()));
-		String line = reader.readLine();
-
+	public AnalyticsCounter(ISymptomReader reader, ISymptomWriter writer) {
+		this.reader = reader;
+		this.writer = writer;
+		// constructor
 		
-		
-		while (line != null) {
-			
-			System.out.println("symptom from file: " + line);
-			if(symptoms.isEmpty()) {
-				Symptom newSymptom = new Symptom(line);
-				newSymptom.incrementCount();
-				symptoms.add(newSymptom);
-				
-			}
-			for (Symptom symptom: symptoms) {
-				if (symptom.getName().equals(line)) {
-					symptom.incrementCount();
-				}
-				else {
-					found = false;
-				}
-			}
-			if (!found) {
-				Symptom newSymptom = new Symptom(line);
-				newSymptom.incrementCount();
-				symptoms.add(newSymptom);
-
+	}
+	public List<String> getSymptoms(){
+		return reader.GetSymptoms();
+	}
+	public Map<String, Integer> countSymptoms(List<String> symptoms){
+		Map<String, Integer> symptomCount = new java.util.HashMap<>();
+		for(String symptom: symptoms) {
+			if (symptomCount.containsKey(symptom)) {
+				symptomCount.put(symptom, symptomCount.get(symptom) + 1);
+			} else {
+				symptomCount.put(symptom, 1);
 			}
 			
-		
+		}
+		return symptomCount;
+	}
+	public Map<String, Integer> sortSymptoms(Map<String, Integer> symptoms){
+		Map<String, Integer> sortedSymptoms = new java.util.TreeMap<>(symptoms);
+		return sortedSymptoms;
+	}
+	public void writeSymptoms(Map<String, Integer> symptoms){
+		writer.writeSymptoms(symptoms);
+	}
 
-			line = reader.readLine();	// get another symptom
-		}
-		reader.close();
-	}
-	catch(IOException e) {
-		e.printStackTrace();
-	}
-	// now write output
-		try {	
-		
-		
-		FileWriter writer = new FileWriter ("result.out");
-		if (symptoms.isEmpty()) {
-			writer.write("no symptom found");
-		}
-		for (Symptom symptom: symptoms) {
-			writer.write(symptom.toString() + "\n");
-		}
-		writer.close();
-		
-	}
-	catch (IOException e) {
-		e.printStackTrace();
-	}
-}
+
+
+	
 }
