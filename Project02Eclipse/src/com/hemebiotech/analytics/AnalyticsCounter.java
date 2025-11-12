@@ -3,41 +3,77 @@ package com.hemebiotech.analytics;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.hemebiotech.Symptom;
 
 public class AnalyticsCounter {
-	private static int headacheCount = 0;	
-	private static int rashCount = 0;	
-	private static int pupilCount = 0;		
-	
+	static Set<Symptom> symptoms;
+
+
 	public static void main(String args[]) throws Exception {
+		Set <Symptom> symptoms = new HashSet<Symptom>();
+		boolean found = false;
 		// first get input
-		BufferedReader reader = new BufferedReader (new FileReader("symptoms.txt"));
+		try {
+		Path path = Path.of("/home/ludo/Documents/OC/Debug-Java/brot-ludovic-debug-Java/Project02Eclipse/symptoms.txt");
+		BufferedReader reader = new BufferedReader (new FileReader(path.toFile()));
 		String line = reader.readLine();
 
-		int i = 0;	
-		int headCount = 0;	
+		
+		
 		while (line != null) {
-			i++;	
+			
 			System.out.println("symptom from file: " + line);
-			if (line.equals("headache")) {
-				headCount++;
-				System.out.println("number of headaches: " + headCount);
+			if(symptoms.isEmpty()) {
+				Symptom newSymptom = new Symptom(line);
+				newSymptom.incrementCount();
+				symptoms.add(newSymptom);
+				
 			}
-			else if (line.equals("rush")) {
-				rashCount++;
+			for (Symptom symptom: symptoms) {
+				if (symptom.getName().equals(line)) {
+					symptom.incrementCount();
+				}
+				else {
+					found = false;
+				}
 			}
-			else if (line.contains("pupils")) {
-				pupilCount++;
+			if (!found) {
+				Symptom newSymptom = new Symptom(line);
+				newSymptom.incrementCount();
+				symptoms.add(newSymptom);
+
 			}
+			
+		
 
 			line = reader.readLine();	// get another symptom
 		}
-		
-		// next generate output
-		FileWriter writer = new FileWriter ("result.out");
-		writer.write("headache: " + headacheCount + "\n");
-		writer.write("rash: " + rashCount + "\n");
-		writer.write("dialated pupils: " + pupilCount + "\n");
-		writer.close();
+		reader.close();
 	}
+	catch(IOException e) {
+		e.printStackTrace();
+	}
+	// now write output
+		try {	
+		
+		
+		FileWriter writer = new FileWriter ("result.out");
+		if (symptoms.isEmpty()) {
+			writer.write("no symptom found");
+		}
+		for (Symptom symptom: symptoms) {
+			writer.write(symptom.toString() + "\n");
+		}
+		writer.close();
+		
+	}
+	catch (IOException e) {
+		e.printStackTrace();
+	}
+}
 }
