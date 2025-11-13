@@ -7,8 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Simple brute force implementation
- *
+ * Implementation of ISymptomReader interface
+ * Reads symptoms from a file specified by the filepath
+ * Each line in the file represents a symptom
+ * If the file is not found or an error occurs, it prints the stack trace
+ * 
  */
 public class ReadSymptomDataFromFile implements ISymptomReader {
 
@@ -21,7 +24,9 @@ public class ReadSymptomDataFromFile implements ISymptomReader {
 	public ReadSymptomDataFromFile (String filepath) {
 		this.filepath = filepath;
 	}
-	
+	/**
+	 * @return List of symptoms read from the file or an empty list if file not found
+	 */
 	@Override
 	public List<String> GetSymptoms() {
 		ArrayList<String> result = new ArrayList<String>();
