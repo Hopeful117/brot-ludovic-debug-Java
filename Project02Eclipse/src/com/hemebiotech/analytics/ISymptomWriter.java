@@ -11,7 +11,10 @@ import java.util.Map;
  */
 
 public interface ISymptomWriter {
-    
+    /**
+    * Write symptoms and their occurrences to a destination
+    * @param symptoms Map of symptoms and their occurrences 
+     */
     void writeSymptoms(Map<String, Integer> symptoms);
        
     }

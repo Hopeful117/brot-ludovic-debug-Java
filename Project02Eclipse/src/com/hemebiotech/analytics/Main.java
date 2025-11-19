@@ -11,7 +11,7 @@ import java.util.Map;
 public class Main {
     public static void main(String[] args) {
         try{
-        ISymptomReader reader = new ReadSymptomDataFromFile("/home/ludo/Documents/OC/Debug-Java/brot-ludovic-debug-Java/Project02Eclipse/symptoms.txt");
+        ISymptomReader reader = new ReadSymptomDataFromFile("symptoms.txt");
         ISymptomWriter writer = new WriteSymptomDataToFile();
         AnalyticsCounter counter = new AnalyticsCounter(reader, writer);
         List<String> symptom=counter.getSymptoms();
